@@ -54,7 +54,17 @@ def fetch_earthquake_data(**context):
 
 
         df = pd.DataFrame(records)
-        df.to_csv(f'/tmp/scrapped_data_{context["ds"]}.csv', index=False)
+        #csv
+        csv_file = f'/tmp/scrapped_data_{context["ds"]}.csv'
+        df.to_csv(csv_file, index=False)
+
+        #json
+        # json_file = f'dags/data/scrapped_data_{context["ds"]}.json'
+        # df.to_json(json_file, orient='records', date_format='iso')
+
+        json_file = f'dags/data/scrapped_data_latest.json'
+        df.to_json(json_file, orient='records', date_format='iso')
+
         print(df.head())
         logging.info(f"Successfully scraped {len(records)} items.")
         return len(records)
@@ -103,5 +113,3 @@ with DAG(
     )
 
     fetch_task >> save_to_postgres
-
-
