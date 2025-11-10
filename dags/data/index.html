@@ -14,11 +14,35 @@ svg { width: 100%; height: 90vh; }
 </head>
 <body>
 <h2>Türkiye Deprem Haritası</h2>
-
+<button onclick="location.reload();">Verileri Yenile</button>
+<button onclick="last100()">Son 100</button>
 <div id="map"></div>
 <div id="tooltip" class="tooltip" style="display:none;"></div>
 
 <script>
+function last100() {
+    d3.json("scrapped_data_latest.json").then(data => {
+        const last100 = data.slice(-100);
+        svg.selectAll("circle").remove();
+        svg.selectAll("circle")
+          .data(last100)
+          .enter()
+          .append("circle")
+          .attr("class","earthquake")
+          .attr("cx", d => projection([d.boylam,d.enlem])[0])
+          .attr("cy", d => projection([d.boylam,d.enlem])[1])
+          .attr("r", d => d.ML!=="-" ? +d.ML*2 : 2)
+          .attr("fill", d => +d.ML>4 ? "red":"orange" && +d.ML>2 ? "orange":"green")
+          .call(zoom)
+          .on("mouseover", function(event,d){
+            tooltip.style("display","block")
+                   .style("left",(event.pageX+10)+"px")
+                   .style("top",(event.pageY-30)+"px")
+                   .html(`<b>${d.yer}</b><br>Büyüklük: ${d.ML}<br>Derinlik: ${d.derinlik_km} km<br>${d.tarih} ${d.saat}`);
+          })
+          .on("mouseout",()=>tooltip.style("display","none"));
+    });
+}
 const width = window.innerWidth;
 const height = window.innerHeight*0.85;
 

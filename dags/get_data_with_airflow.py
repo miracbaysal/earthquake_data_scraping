@@ -59,9 +59,6 @@ def fetch_earthquake_data(**context):
         df.to_csv(csv_file, index=False)
 
         #json
-        # json_file = f'dags/data/scrapped_data_{context["ds"]}.json'
-        # df.to_json(json_file, orient='records', date_format='iso')
-
         json_file = f'dags/data/scrapped_data_latest.json'
         df.to_json(json_file, orient='records', date_format='iso')
 
