@@ -97,16 +97,16 @@ with DAG(
     dag_id='kandilli_earthquake_data_pipeline_v4',
     default_args=default_args,
     description = 'DAG to scrape earthquake data from Kandilli Rasathanesi and store it in Postgres',
-    schedule = '@hourly',
+    schedule = '@hourly'
 )as dag:
     fetch_task = PythonOperator(
         task_id = 'fetch_earthquake_data',
         python_callable=fetch_earthquake_data,
     )
 
-    save_to_postgres = PythonOperator(
+    save_to_postgres_task = PythonOperator(
         task_id = 'save_to_postgres',
         python_callable=save_to_postgres,
     )
 
-    fetch_task >> save_to_postgres
+    fetch_task >> save_to_postgres_task

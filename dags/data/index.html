@@ -16,6 +16,7 @@ svg { width: 100%; height: 90vh; }
 <h2>Türkiye Deprem Haritası</h2>
 <button onclick="location.reload();">Verileri Yenile</button>
 <button onclick="last100()">Son 100</button>
+<button onclick="max10()">Büyük Depremler</button>
 <div id="map"></div>
 <div id="tooltip" class="tooltip" style="display:none;"></div>
 
@@ -32,7 +33,30 @@ function last100() {
           .attr("cx", d => projection([d.boylam,d.enlem])[0])
           .attr("cy", d => projection([d.boylam,d.enlem])[1])
           .attr("r", d => d.ML!=="-" ? +d.ML*2 : 2)
-          .attr("fill", d => +d.ML>4 ? "red":"orange" && +d.ML>2 ? "orange":"green")
+          .attr("fill", d => { if (+d.ML > 6) return "red"; else if (+d.ML > 4)return "orange"; else if (+d.ML > 2)return "pink"; else return "green";})
+          .call(zoom)
+          .on("mouseover", function(event,d){
+            tooltip.style("display","block")
+                   .style("left",(event.pageX+10)+"px")
+                   .style("top",(event.pageY-30)+"px")
+                   .html(`<b>${d.yer}</b><br>Büyüklük: ${d.ML}<br>Derinlik: ${d.derinlik_km} km<br>${d.tarih} ${d.saat}`);
+          })
+          .on("mouseout",()=>tooltip.style("display","none"));
+    });
+}
+function max10(){
+    d3.json("scrapped_data_latest.json").then(data => {
+        const max10 = data.sort((a,b) => +b.ML - +a.ML).slice(0,10);
+        svg.selectAll("circle").remove();
+        svg.selectAll("circle")
+          .data(max10)
+          .enter()
+          .append("circle")
+          .attr("class","earthquake")
+          .attr("cx", d => projection([d.boylam,d.enlem])[0])
+          .attr("cy", d => projection([d.boylam,d.enlem])[1])
+          .attr("r", d => d.ML!=="-" ? +d.ML*2 : 2)
+          .attr("fill", d => { if (+d.ML > 6) return "red"; else if (+d.ML > 4)return "orange"; else if (+d.ML > 2)return "pink"; else return "green";})
           .call(zoom)
           .on("mouseover", function(event,d){
             tooltip.style("display","block")
@@ -71,7 +95,6 @@ var zoom = d3.zoom()
         svg.selectAll("circle").attr("transform", event.transform);
     });
 
-
 // GeoJSON Türkiye haritası
 d3.json("turkey.json").then(turkey => {
     svg.selectAll("path")
@@ -93,7 +116,8 @@ d3.json("turkey.json").then(turkey => {
       .attr("cx", d => projection([d.boylam,d.enlem])[0])
       .attr("cy", d => projection([d.boylam,d.enlem])[1])
       .attr("r", d => d.ML!=="-" ? +d.ML*2 : 2)
-      .attr("fill", d => +d.ML>4 ? "red":"orange" && +d.ML>2 ? "orange":"green")
+      // .attr("fill", d => +d.ML>4 ? "red":"orange" && +d.ML>2 ? "orange":"green")
+      .attr("fill", d => { if (+d.ML > 6) return "red"; else if (+d.ML > 4)return "orange"; else if (+d.ML > 2)return "pink"; else return "green";})
       .call(zoom)
       .on("mouseover", function(event,d){
         tooltip.style("display","block")
@@ -105,6 +129,8 @@ d3.json("turkey.json").then(turkey => {
       .on("mouseout",()=>tooltip.style("display","none"));
   });
 });
+
+
 
 </script>
 </body>
