@@ -150,15 +150,15 @@ def kandilli_earthquake_data_pipeline_v5():
                     if len(parts) < 7:
                         continue
                     record = {
-                        "tarih": parts[0],
-                        "saat": parts[1],
-                        "enlem": parts[2],
-                        "boylam": parts[3],
-                        "derinlik_km": parts[4],
+                        "Tarih": parts[0],
+                        "Saat": parts[1],
+                        "Enlem": parts[2],
+                        "Boylam": parts[3],
+                        "Derinlik_km": parts[4],
                         "MD": parts[5],
                         "ML": parts[6],
                         "Mw": parts[7] if len(parts) > 7 else "-",
-                        "yer": " ".join(parts[8:]) if len(parts) > 8 else "-"
+                        "Lokasyon": " ".join(parts[8:]) if len(parts) > 8 else "-"
                     }
                     records.append(record)
 
