@@ -128,30 +128,30 @@ const path = d3.geoPath()
                 
 const tooltip = d3.select("#tooltip");
 
-const zoom = d3
-          .zoom()
-          .scaleExtent([1, 8])
-          .on("zoom", (event) => {
-            const { transform } = event;
-            mapGroup.attr("transform", transform);
-            mapGroup
-              .selectAll("circle")
-              .attr("transform", event.transform)
-              .selectAll("path")
-              .attr("r", (d) =>
-                d.ML ? (d.ML * 3.5) / transform.k : 3 / transform.k
-              );
+// const zoom = d3
+//           .zoom()
+//           .scaleExtent([1, 8])
+//           .on("zoom", (event) => {
+//             const { transform } = event;
+//             mapGroup.attr("transform", transform);
+//             mapGroup
+//               .selectAll("circle")
+//               .attr("transform", event.transform)
+//               .selectAll("path")
+//               .attr("r", (d) =>
+//                 d.ML ? (d.ML * 3.5) / transform.k : 3 / transform.k
+//               );
               
-          });
+//           });
 
 
-// var zoom = d3.zoom()
-//     .scaleExtent([1, 15])
-//     .translateExtent([[0, 0], [width, height]])
-//     .on("zoom", function(event) {
-//         svg.selectAll("path").attr("transform", event.transform);
-//         svg.selectAll("circle").attr("transform", event.transform);
-//     });
+var zoom = d3.zoom()
+    .scaleExtent([1, 15])
+    .translateExtent([[0, 0], [width, height]])
+    .on("zoom", function(event) {
+        svg.selectAll("path").attr("transform", event.transform);
+        svg.selectAll("circle").attr("transform", event.transform);
+    });
 
 // GeoJSON Türkiye haritası
 d3.json("turkey.json").then(turkey => {
