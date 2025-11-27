@@ -136,9 +136,12 @@ const zoom = d3
             mapGroup.attr("transform", transform);
             mapGroup
               .selectAll("circle")
+              .attr("transform", event.transform)
+              .selectAll("path")
               .attr("r", (d) =>
                 d.ML ? (d.ML * 3.5) / transform.k : 3 / transform.k
               );
+              
           });
 
 
